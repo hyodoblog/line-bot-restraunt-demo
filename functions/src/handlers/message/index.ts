@@ -1,6 +1,6 @@
-import { Line } from '../../line.config'
+import { Line, client } from '../../line.config'
 import { text } from './text'
-// import { makeReplyMessages } from '../../lib/line'
+import { makeReplyMessages } from '../../lib/line'
 
 export const message = async (event: Line.MessageEvent): Promise<string> => {
   // Webhookの検証
@@ -10,9 +10,12 @@ export const message = async (event: Line.MessageEvent): Promise<string> => {
 
   switch (event.message.type) {
     case 'text':
-      await text(event)
-      break
+      return await text(event)
     default:
+      await client.replyMessage(
+        event.replyToken,
+        makeReplyMessages('文字以外は受け付けてません。')
+      )
+      return '文字以外を受信しました'
   }
-  return ''
 }
