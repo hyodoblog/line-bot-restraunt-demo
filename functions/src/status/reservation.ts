@@ -1,10 +1,9 @@
 import { Line, client } from '../line.config'
-import { datastoreUpdate, datastoreGetFindBy } from '../lib/gcloud/datastore'
+import { datastoreUpdate } from '../lib/gcloud/datastore'
 import { makeReplyMessages } from '../lib/line'
 import { reservationMsg } from '../messages'
-import { dsKindUser, dsKindProduct } from '../models'
+import { dsKindUser } from '../models'
 import { User } from '../models/user'
-import { Product } from '../models/product'
 
 export const process02 = async (
   event: Line.MessageEvent,
@@ -60,11 +59,6 @@ const process04 = async (
   user: User
 ): Promise<string> => {
   const { text } = event.message as Line.TextEventMessage
-  const product: Product = await datastoreGetFindBy(
-    dsKindProduct,
-    'name',
-    user.reservedProductName
-  )
   user.statusNo = 5
   user.reservedTimeToVisit = text
   await datastoreUpdate(dsKindUser, user)
@@ -74,7 +68,7 @@ const process04 = async (
       user.reservedProductName as string,
       user.reservedTimeToVisit as string,
       user.reservedName as string,
-      product.money as number
+      500
     )
   )
   return '確認'
