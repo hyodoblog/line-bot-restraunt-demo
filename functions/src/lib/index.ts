@@ -51,7 +51,7 @@ export const isBusinessHours = (): boolean => {
 
 export const initUser = async (
   event: Line.FollowEvent | Line.MessageEvent,
-  user?: User
+  user: User | undefined
 ): Promise<void> => {
   if (user) {
     await datastoreUpdate(dsKindUser, initUserData(user))

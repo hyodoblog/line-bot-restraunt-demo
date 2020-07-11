@@ -12,15 +12,24 @@ export const text = async (event: Line.MessageEvent): Promise<string> => {
     event.source.userId
   )
 
-  if (!user) {
+  // データベースにuserデータがあるか確認
+  if (!user || !user.statusNo) {
     await initUser(event, user)
     return 'ユーザーデータを初期化'
   }
 
+  // 状態分離
+  // statusNo: 1
   if (user.statusNo === status.idleStatusNo) {
     return await status.idle(event, user)
-  } else if (user.statusNo <= status.reservedStatusNo) {
+  }
+  // statusNo: 2 ~ 5
+  else if (user.statusNo <= status.reservedStatusNo) {
     return await status.reservation(event, user)
   }
-  return ''
+  // statusNo: 6
+  else {
+    console.error(`statusNo: ${user.statusNo}`)
+    throw new Error('statusNoに不具合が発生')
+  }
 }
