@@ -1,13 +1,43 @@
 import { Line, client } from '../line.config'
 import { datastoreUpdate, datastoreGetFindBy } from '../lib/gcloud/datastore'
-import { makeReplyMessages } from '../lib/line'
+import { makeReplyMessages, getLinePayRequestUrl } from '../lib/line'
 import { reservationMsg } from '../messages'
 import { dsKindUser, dsKindProduct } from '../models'
 import { User } from '../models/user'
 import { Product } from '../models/product'
 
+const sendConfirmMsg = async (
+  event: Line.MessageEvent,
+  user: User
+): Promise<void> => {
+  const product: Product = await datastoreGetFindBy(
+    dsKindProduct,
+    'name',
+    user.reservedProductName
+  )
+  const url = await getLinePayRequestUrl(
+    event.source.userId as string,
+    String(product.money)
+  )
+  console.log(url)
+  console.log(url.info.paymentUrl.web)
+  user.statusNo = 5
+  await datastoreUpdate(dsKindUser, user)
+  await client.replyMessage(
+    event.replyToken,
+    makeReplyMessages(url.info.paymentUrl.web)
+    // reservationMsg.confirm(
+    //   user.reservedProductName as string,
+    //   user.reservedTimeToVisit as string,
+    //   user.reservedName as string,
+    //   product.money,
+    //   url.info.paymentUrl.web
+    // )
+  )
+}
+
 // メニュー選択の処理
-export const process02 = async (
+const process02 = async (
   event: Line.MessageEvent,
   user: User
 ): Promise<string> => {
@@ -32,11 +62,11 @@ export const process02 = async (
 
   if (user.reservedTimeToVisit === null) {
     user.statusNo = 3
+    await datastoreUpdate(dsKindUser, user)
+    await client.replyMessage(event.replyToken, reservationMsg.timeToVisit)
   } else {
-    user.statusNo = 5
+    await sendConfirmMsg(event, user)
   }
-  await datastoreUpdate(dsKindUser, user)
-  await client.replyMessage(event.replyToken, reservationMsg.timeToVisit)
 
   return 'メニューを選択'
 }
@@ -47,14 +77,14 @@ const process03 = async (
   user: User
 ): Promise<string> => {
   const { text } = event.message as Line.TextEventMessage
+  user.reservedTimeToVisit = text
   if (user.reservedName === null) {
     user.statusNo = 4
+    await datastoreUpdate(dsKindUser, user)
+    await client.replyMessage(event.replyToken, reservationMsg.questionName)
   } else {
-    user.statusNo = 5
+    await sendConfirmMsg(event, user)
   }
-  user.reservedTimeToVisit = text
-  await datastoreUpdate(dsKindUser, user)
-  await client.replyMessage(event.replyToken, reservationMsg.questionName)
   return '来店時間入力'
 }
 
@@ -63,25 +93,9 @@ const process04 = async (
   event: Line.MessageEvent,
   user: User
 ): Promise<string> => {
-  const product: Product = await datastoreGetFindBy(
-    dsKindProduct,
-    'name',
-    user.reservedProductName
-  )
-
   const { text } = event.message as Line.TextEventMessage
-  user.statusNo = 5
   user.reservedTimeToVisit = text
-  await datastoreUpdate(dsKindUser, user)
-  await client.replyMessage(
-    event.replyToken,
-    reservationMsg.confirm(
-      user.reservedProductName as string,
-      user.reservedTimeToVisit as string,
-      user.reservedName as string,
-      product.money
-    )
-  )
+  await sendConfirmMsg(event, user)
   return '確認'
 }
 

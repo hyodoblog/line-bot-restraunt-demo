@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { config, Line } from '../line.config'
-import handlerEvent from '../handlers'
+import lineEvent from '../handlers/lineEvent'
 
 const router: express.Router = express.Router()
 
@@ -10,7 +10,7 @@ router.get('/', (_, res) => {
 })
 
 router.post('/', Line.middleware(config), (req, res) => {
-  Promise.all(req.body.events.map(handlerEvent))
+  Promise.all(req.body.events.map(lineEvent))
     .then((result) => {
       console.log(result)
       res.status(200).end()

@@ -527,7 +527,8 @@ export const confirm = (
   productName: string,
   timeToVisit: string,
   name: string,
-  money: number
+  money: number,
+  uri: string
 ): Types.FlexMessage => {
   return {
     type: 'flex',
@@ -659,7 +660,7 @@ export const confirm = (
             action: {
               type: 'uri',
               label: '確定',
-              uri: 'https://linecorp.com',
+              uri,
             },
             style: 'primary',
           },

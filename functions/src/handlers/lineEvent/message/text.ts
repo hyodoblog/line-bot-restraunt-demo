@@ -1,11 +1,11 @@
-import { Line } from '../../line.config'
-import { initUser } from '../../lib'
-import { datastoreGetFindBy } from '../../lib/gcloud/datastore'
-import { dsKindUser } from '../../models'
-import { User } from '../../models/user'
-import * as status from '../../status'
+import { Line } from '../../../line.config'
+import { initUser } from '../../../lib'
+import { datastoreGetFindBy } from '../../../lib/gcloud/datastore'
+import { dsKindUser } from '../../../models'
+import { User } from '../../../models/user'
+import * as status from '../../../status'
 
-export const text = async (event: Line.MessageEvent): Promise<string> => {
+export default async (event: Line.MessageEvent): Promise<string> => {
   const user: User | undefined = await datastoreGetFindBy(
     dsKindUser,
     'userId',

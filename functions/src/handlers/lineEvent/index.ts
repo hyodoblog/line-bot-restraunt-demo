@@ -1,7 +1,7 @@
-import { Line } from '../line.config'
-import { error } from './error'
-import { follow } from './follow'
-import { message } from './message'
+import { Line } from '../../line.config'
+import Error from './error'
+import Follow from './follow'
+import Message from './message'
 
 export default async (
   event: Line.WebhookEvent & Line.ReplyableEvent
@@ -9,20 +9,20 @@ export default async (
   try {
     switch (event.type) {
       case 'follow': {
-        return await follow(event as Line.FollowEvent)
+        return await Follow(event as Line.FollowEvent)
       }
       case 'unfollow': {
         return 'ブロックまたは友達登録を解除されました'
       }
       case 'message': {
-        return await message(event as Line.MessageEvent)
+        return await Message(event as Line.MessageEvent)
       }
       default:
     }
     return ''
   } catch (err) {
     console.log(err)
-    await error(event)
+    await Error(event)
     return err
   }
 }
