@@ -27,6 +27,7 @@ export default async (event: Request): Promise<string> => {
         const result = await confirmPaymentRequest(transactionId, amount)
         if (result.returnCode === '0000') {
           user.statusNo = 6
+          user.reservedAt = new Date().getTime()
           await datastoreUpdate(dsKindUser, user)
           await client.pushMessage(
             userId,

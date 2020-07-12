@@ -15,21 +15,11 @@ export const menuList: Types.FlexMessage = {
           size: 'full',
           aspectRatio: '20:13',
           aspectMode: 'cover',
-          action: {
-            type: 'uri',
-            label: 'Action',
-            uri: 'https://linecorp.com',
-          },
         },
         body: {
           type: 'box',
           layout: 'vertical',
           spacing: 'md',
-          action: {
-            type: 'uri',
-            label: 'Action',
-            uri: 'https://linecorp.com',
-          },
           contents: [
             {
               type: 'text',
@@ -39,28 +29,21 @@ export const menuList: Types.FlexMessage = {
             },
             {
               type: 'box',
-              layout: 'vertical',
-              spacing: 'sm',
+              layout: 'baseline',
               contents: [
                 {
-                  type: 'box',
-                  layout: 'baseline',
-                  contents: [
-                    {
-                      type: 'text',
-                      text: '500円',
-                      flex: 0,
-                      margin: 'sm',
-                      weight: 'bold',
-                    },
-                    {
-                      type: 'text',
-                      text: '400kcl',
-                      size: 'sm',
-                      align: 'end',
-                      color: '#AAAAAA',
-                    },
-                  ],
+                  type: 'text',
+                  text: '500円',
+                  flex: 0,
+                  margin: 'sm',
+                  weight: 'bold',
+                },
+                {
+                  type: 'text',
+                  text: '400kcl',
+                  size: 'sm',
+                  align: 'end',
+                  color: '#AAAAAA',
                 },
               ],
             },
@@ -96,11 +79,6 @@ export const menuList: Types.FlexMessage = {
           size: 'full',
           aspectRatio: '20:13',
           aspectMode: 'cover',
-          action: {
-            type: 'uri',
-            label: 'Action',
-            uri: 'https://linecorp.com',
-          },
         },
         body: {
           type: 'box',
@@ -120,28 +98,21 @@ export const menuList: Types.FlexMessage = {
             },
             {
               type: 'box',
-              layout: 'vertical',
-              spacing: 'sm',
+              layout: 'baseline',
               contents: [
                 {
-                  type: 'box',
-                  layout: 'baseline',
-                  contents: [
-                    {
-                      type: 'text',
-                      text: '600円',
-                      flex: 0,
-                      margin: 'sm',
-                      weight: 'bold',
-                    },
-                    {
-                      type: 'text',
-                      text: '400kcl',
-                      size: 'sm',
-                      align: 'end',
-                      color: '#AAAAAA',
-                    },
-                  ],
+                  type: 'text',
+                  text: '700円',
+                  flex: 0,
+                  margin: 'sm',
+                  weight: 'bold',
+                },
+                {
+                  type: 'text',
+                  text: '400kcl',
+                  size: 'sm',
+                  align: 'end',
+                  color: '#AAAAAA',
                 },
               ],
             },
@@ -177,11 +148,6 @@ export const menuList: Types.FlexMessage = {
           size: 'full',
           aspectRatio: '20:13',
           aspectMode: 'cover',
-          action: {
-            type: 'uri',
-            label: 'Action',
-            uri: 'https://linecorp.com',
-          },
         },
         body: {
           type: 'box',
@@ -201,28 +167,21 @@ export const menuList: Types.FlexMessage = {
             },
             {
               type: 'box',
-              layout: 'vertical',
-              spacing: 'sm',
+              layout: 'baseline',
               contents: [
                 {
-                  type: 'box',
-                  layout: 'baseline',
-                  contents: [
-                    {
-                      type: 'text',
-                      text: '700円',
-                      flex: 0,
-                      margin: 'sm',
-                      weight: 'bold',
-                    },
-                    {
-                      type: 'text',
-                      text: '400kcl',
-                      size: 'sm',
-                      align: 'end',
-                      color: '#AAAAAA',
-                    },
-                  ],
+                  type: 'text',
+                  text: '1000円',
+                  flex: 0,
+                  margin: 'sm',
+                  weight: 'bold',
+                },
+                {
+                  type: 'text',
+                  text: '400kcl',
+                  size: 'sm',
+                  align: 'end',
+                  color: '#AAAAAA',
                 },
               ],
             },
@@ -528,7 +487,7 @@ export const confirm = (
   timeToVisit: string,
   name: string,
   money: number,
-  uri: string
+  url: string
 ): Types.FlexMessage => {
   return {
     type: 'flex',
@@ -550,11 +509,6 @@ export const confirm = (
         type: 'box',
         layout: 'vertical',
         spacing: 'md',
-        action: {
-          type: 'uri',
-          label: 'Action',
-          uri: 'https://linecorp.com',
-        },
         contents: [
           {
             type: 'box',
@@ -660,7 +614,7 @@ export const confirm = (
             action: {
               type: 'uri',
               label: '確定',
-              uri,
+              uri: url,
             },
             style: 'primary',
           },
