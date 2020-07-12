@@ -108,13 +108,10 @@ export const getLinePayRequestUrl = async (
   return result
 }
 
-interface ConfirmPayRes {
-  returnCode: string
-}
 export const confirmPaymentRequest = async (
   transactionId: string,
   amount: string
-): Promise<ConfirmPayRes> => {
+): Promise<any> => {
   const body = {
     amount,
     currency: 'JPY',

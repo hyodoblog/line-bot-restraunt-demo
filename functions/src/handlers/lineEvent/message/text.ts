@@ -24,12 +24,17 @@ export default async (event: Line.MessageEvent): Promise<string> => {
     return await status.idle(event, user)
   }
   // statusNo: 2 ~ 5
-  else if (user.statusNo <= status.reservedStatusNo) {
+  else if (user.statusNo < status.reservedStatusNo) {
     return await status.reservation(event, user)
   }
   // statusNo: 6
-  else {
-    console.error(`statusNo: ${user.statusNo}`)
-    throw new Error('statusNoに不具合が発生')
+  else if (user.statusNo === status.reservedStatusNo) {
+    return await status.reserved(event, user)
+  }
+  // statusNo: 7
+  else if (user.statusNo <= status.lastStatusNo) {
+    return await status.cancel(event, user)
+  } else {
+    throw new Error(`statusNo: ${user.statusNo}で不具合が発生`)
   }
 }

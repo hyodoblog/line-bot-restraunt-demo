@@ -3,7 +3,7 @@ import { datastoreUpdate, datastoreGetFindBy } from '../lib/gcloud/datastore'
 import { makeReplyMessages, getLinePayRequestUrl } from '../lib/line'
 import { reservationMsg } from '../messages'
 import { dsKindUser, dsKindProduct } from '../models'
-import { User } from '../models/user'
+import { User, initUserData } from '../models/user'
 import { Product } from '../models/product'
 
 const sendConfirmMsg = async (
@@ -19,20 +19,17 @@ const sendConfirmMsg = async (
     event.source.userId as string,
     String(product.money)
   )
-  console.log(url)
-  console.log(url.info.paymentUrl.web)
   user.statusNo = 5
   await datastoreUpdate(dsKindUser, user)
   await client.replyMessage(
     event.replyToken,
-    makeReplyMessages(url.info.paymentUrl.web)
-    // reservationMsg.confirm(
-    //   user.reservedProductName as string,
-    //   user.reservedTimeToVisit as string,
-    //   user.reservedName as string,
-    //   product.money,
-    //   url.info.paymentUrl.web
-    // )
+    reservationMsg.confirm(
+      user.reservedProductName as string,
+      user.reservedTimeToVisit as string,
+      user.reservedName as string,
+      product.money,
+      url.info.paymentUrl.web
+    )
   )
 }
 
@@ -65,6 +62,8 @@ const process02 = async (
     await datastoreUpdate(dsKindUser, user)
     await client.replyMessage(event.replyToken, reservationMsg.timeToVisit)
   } else {
+    user.statusNo = 5
+    await datastoreUpdate(dsKindUser, user)
     await sendConfirmMsg(event, user)
   }
 
@@ -83,6 +82,8 @@ const process03 = async (
     await datastoreUpdate(dsKindUser, user)
     await client.replyMessage(event.replyToken, reservationMsg.questionName)
   } else {
+    user.statusNo = 5
+    await datastoreUpdate(dsKindUser, user)
     await sendConfirmMsg(event, user)
   }
   return '来店時間入力'
@@ -94,7 +95,7 @@ const process04 = async (
   user: User
 ): Promise<string> => {
   const { text } = event.message as Line.TextEventMessage
-  user.reservedTimeToVisit = text
+  user.reservedName = text
   await sendConfirmMsg(event, user)
   return '確認'
 }
@@ -121,8 +122,7 @@ const process05 = async (
       await client.replyMessage(event.replyToken, reservationMsg.questionName)
       return 'お名前を修正'
     case 'キャンセル':
-      user.statusNo = 1
-      await datastoreUpdate(dsKindUser, user)
+      await datastoreUpdate(dsKindUser, initUserData(user))
       await client.replyMessage(
         event.replyToken,
         makeReplyMessages(
@@ -139,7 +139,7 @@ const process05 = async (
   }
 }
 
-export const reservation = async (
+export default async (
   event: Line.MessageEvent,
   user: User
 ): Promise<string> => {

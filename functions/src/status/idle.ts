@@ -5,7 +5,7 @@ import { reservationMsg } from '../messages'
 import { dsKindUser } from '../models'
 import { User } from '../models/user'
 
-export const idle = async (
+export default async (
   event: Line.MessageEvent,
   user: User
 ): Promise<string> => {
